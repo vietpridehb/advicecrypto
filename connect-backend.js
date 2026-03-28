@@ -1,4 +1,4 @@
-const API_URL = 'https://advicecrypto.onrender.com/'; // <--- THAY LINK RENDER CỦA BẠN VÀO ĐÂY
+const API_URL = 'https://advicecrypto.onrender.com'; // <--- THAY LINK RENDER CỦA BẠN VÀO ĐÂY
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('contactForm');
