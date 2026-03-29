@@ -55,10 +55,18 @@ app.post('/api/submit', async (req, res) => {
 
 app.get('/api/approve/:id', async (req, res) => {
     try {
+        console.log("=> Admin dang duyet user ID:", req.params.id);
         const user = await User.findByIdAndUpdate(req.params.id, { isApproved: true }, { new: true });
-        if (!user) return res.send("<h1>Không tìm thấy user!</h1>");
-        res.send(`<h1>ĐÃ DUYỆT THÀNH CÔNG!</h1><p>User <strong>${user.name}</strong> đã có thể đăng nhập.</p>`);
-    } catch (err) { res.status(500).send("<h1>Lỗi duyệt!</h1>"); }
+        if (!user) {
+            console.log("❌ Không tìm thấy user để duyệt!");
+            return res.send("<h1>Không tìm thấy user!</h1>");
+        }
+        console.log("✅ Đã duyệt thành công cho:", user.email);
+        res.send(`<h1>ĐÃ DUYỆT THÀNH CÔNG!</h1><p>Email: ${user.email} đã được kích hoạt.</p>`);
+    } catch (err) { 
+        console.error("❌ Lỗi khi duyệt:", err);
+        res.status(500).send("<h1>Lỗi hệ thống khi duyệt!</h1>"); 
+    }
 });
 
 app.post('/api/activate', async (req, res) => {
