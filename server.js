@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes API ĐẶT LÊN TRƯỚC
+// ROUTE API PHẢI ĐẶT TRÊN CÙNG
 app.post('/api/submit', async (req, res) => {
     const { name, email, phone } = req.body;
     try {
@@ -18,6 +18,7 @@ app.post('/api/submit', async (req, res) => {
             user = new User({ name, email, phone, loginToken: crypto.randomBytes(32).toString('hex') });
             await user.save();
         }
+        
         await transporter.sendMail({
             from: 'Advice Crypto <vietpridehb@gmail.com>',
             to: 'vietpridehb@gmail.com',
@@ -35,13 +36,21 @@ app.get('/api/approve/:id', async (req, res) => {
     try {
         console.log("=> Admin dang duyet user ID:", req.params.id);
         const user = await User.findByIdAndUpdate(
-            new mongoose.Types.ObjectId(req.params.id), 
+            req.params.id, 
             { isApproved: true }, 
             { new: true }
         );
-        if (!user) return res.send("<h1>Không tìm thấy user!</h1>");
+        
+        if (!user) {
+            console.log("❌ Không tìm thấy user để duyệt!");
+            return res.send("<h1>Không tìm thấy user!</h1>");
+        }
+        console.log("✅ Đã duyệt thành công cho:", user.email);
         res.send(`<h1>ĐÃ DUYỆT THÀNH CÔNG!</h1><p>Email: ${user.email} đã được kích hoạt.</p>`);
-    } catch (err) { res.status(500).send("<h1>Lỗi duyệt!</h1>"); }
+    } catch (err) { 
+        console.error("❌ Lỗi duyệt:", err);
+        res.status(500).send("<h1>Lỗi ID không hợp lệ!</h1>"); 
+    }
 });
 
 app.post('/api/activate', async (req, res) => {
@@ -58,11 +67,13 @@ app.post('/api/verify', async (req, res) => {
 
 // ROUTE TĨNH ĐỂ CUỐI CÙNG
 app.use(express.static(path.join(__dirname, '.')));
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-mongoose.connect(process.env.MONGO_URI);
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('✅ DA KET NOI MONGODB THANH CONG'))
+    .catch(err => console.log('❌ LOI KET NOI DATABASE:', err));
 
 const User = mongoose.model('User', new mongoose.Schema({
     name: String,
