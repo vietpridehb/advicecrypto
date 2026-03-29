@@ -40,14 +40,17 @@ app.post('/api/submit', async (req, res) => {
             await user.save();
         }
         
+        // Tự động lấy link chuẩn từ request
+        const approveLink = `${req.protocol}://${req.get('host')}/api/approve/${user._id}`;
+        
         await transporter.sendMail({
-            from: 'Advice Crypto',
+            from: 'Advice Crypto <vietpridehb@gmail.com>',
             to: 'vietpridehb@gmail.com',
             subject: `Duyệt đăng ký: ${name}`,
             html: `Khách ${name} muốn vào web.<br>
                    Email: ${email}<br>
                    SĐT: ${phone}<br>
-                   <a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY ĐỂ DUYỆT ĐĂNG KÝ</a>`
+                   <a href="${approveLink}">BẤM ĐÂY ĐỂ DUYỆT ĐĂNG KÝ</a>`
         });
         res.json({ success: false, message: 'Đang chờ Admin duyệt!' });
     } catch (err) { res.status(500).json({ error: err.message }); }
