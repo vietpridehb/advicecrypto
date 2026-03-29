@@ -44,15 +44,21 @@ app.post('/api/submit', async (req, res) => {
             from: 'Advice Crypto',
             to: 'vietpridehb@gmail.com',
             subject: `Duyệt đăng ký: ${name}`,
-            html: `Khách ${name} muốn vào web. <a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY ĐỂ DUYỆT</a>`
+            html: `Khách ${name} muốn vào web.<br>
+                   Email: ${email}<br>
+                   SĐT: ${phone}<br>
+                   <a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY ĐỂ DUYỆT ĐĂNG KÝ</a>`
         });
         res.json({ success: false, message: 'Đang chờ Admin duyệt!' });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.get('/api/approve/:id', async (req, res) => {
-    await User.findByIdAndUpdate(req.params.id, { isApproved: true });
-    res.send("<h1>ĐÃ DUYỆT THÀNH CÔNG!</h1><p>User có thể quay lại web nhấn KÍCH HOẠT.</p>");
+    try {
+        const user = await User.findByIdAndUpdate(req.params.id, { isApproved: true }, { new: true });
+        if (!user) return res.send("<h1>Không tìm thấy user!</h1>");
+        res.send(`<h1>ĐÃ DUYỆT THÀNH CÔNG!</h1><p>User <strong>${user.name}</strong> đã có thể đăng nhập.</p>`);
+    } catch (err) { res.status(500).send("<h1>Lỗi duyệt!</h1>"); }
 });
 
 app.post('/api/activate', async (req, res) => {
