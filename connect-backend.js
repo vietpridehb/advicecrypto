@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const name = form.querySelector('input[name="name"]').value;
         const email = form.querySelector('input[name="email"]').value;
+        const name = form.querySelector('input[name="name"]').value;
         const phone = form.querySelector('input[name="phone"]').value;
 
         try {
@@ -17,16 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             alert(data.message);
             
-            // Nếu admin chưa duyệt, hiện nút Kích hoạt
-            if (!data.success) {
-                if(document.getElementById('activate-btn')) return;
+            // Hiện nút Kích Hoạt nếu chưa duyệt
+            if (!data.success && !document.getElementById('activate-btn')) {
                 const btn = document.createElement('button');
                 btn.id = 'activate-btn';
                 btn.innerText = "KÍCH HOẠT ĐĂNG NHẬP NGAY";
-                btn.style.cssText = "margin-top:20px; padding:15px; background:green; color:white; border:none; cursor:pointer;";
+                btn.style.cssText = "margin-top:20px; padding:15px; background:green; color:white; border:none; cursor:pointer; width:100%;";
                 btn.onclick = async () => {
                     const res2 = await fetch(`${API_URL}/api/activate`, {
-                        method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email })
+                        method: 'POST', headers: {'Content-Type': 'application/json'}, 
+                        body: JSON.stringify({ email: email })
                     });
                     const data2 = await res2.json();
                     if(data2.success) {
