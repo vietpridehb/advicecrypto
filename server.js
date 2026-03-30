@@ -10,16 +10,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '.')));
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('✅ DA KET NOI MONGODB THANH CONG'))
-    .catch(err => console.log('❌ LOI KET NOI DATABASE:', err));
+mongoose.connect(process.env.MONGO_URI);
 
 const User = mongoose.model('User', new mongoose.Schema({
-    name: String,
-    email: { type: String, unique: true },
-    phone: String,
-    isApproved: { type: Boolean, default: false },
-    loginToken: String
+    name: String, email: { type: String, unique: true }, phone: String,
+    isApproved: { type: Boolean, default: false }, loginToken: String
 }));
 
 const transporter = nodemailer.createTransport({
@@ -27,70 +22,29 @@ const transporter = nodemailer.createTransport({
     auth: { user: 'vietpridehb@gmail.com', pass: process.env.GMAIL_PASS }
 });
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
 app.post('/api/submit', async (req, res) => {
     const { name, email, phone } = req.body;
-    try {
-        let user = await User.findOne({ email });
-        if (!user) {
-            user = new User({ name, email, phone, loginToken: crypto.randomBytes(32).toString('hex') });
-            await user.save();
-        }
-
-        await transporter.sendMail({
-            from: 'Advice Crypto <vietpridehb@gmail.com>',
-            to: 'vietpridehb@gmail.com',
-            subject: `Duyệt đăng ký: ${name}`,
-            html: `Khách ${name} muốn vào web.<br>
-                   Email: ${email}<br>
-                   SĐT: ${phone}<br>
-                   <a href="https://advicecrypto.onrender.com/api/approve/${user._id}">BẤM ĐÂY ĐỂ DUYỆT ĐĂNG KÝ</a>`
-        });
-      /*      await transporter.sendMail({
-            from: 'Advice Crypto <vietpridehb@gmail.com>',
-            to: 'vietpridehb@gmail.com',
-            subject: `Duyệt đăng ký: ${name}`,
-            html: `Khách ${name} muốn vào web.<br>
-                   Email: ${email}<br>
-                   SĐT: ${phone}<br>
-                   <a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY ĐỂ DUYỆT ĐĂNG KÝ</a>`
-        });  */
-        res.json({ success: false, message: 'Đang chờ Admin duyệt!' });
-    } catch (err) { res.status(500).json({ error: err.message }); }
+    let user = await User.findOne({ email });
+    if (!user) {
+        user = new User({ name, email, phone, loginToken: crypto.randomBytes(32).toString('hex') });
+        await user.save();
+    }
+    await transporter.sendMail({
+        from: 'Advice Crypto', to: 'vietpridehb@gmail.com', subject: `Duyệt: ${name}`,
+        html: `<a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY DUYỆT</a>`
+    });
+    res.json({ success: false, message: 'Chờ Admin duyệt!' });
 });
 
 app.get('/api/approve/:id', async (req, res) => {
-    try {
-        console.log("=> Admin dang duyet user ID:", req.params.id);
-        const user = await User.findByIdAndUpdate(req.params.id, { isApproved: true }, { new: true });
-        
-        if (!user) {
-            console.log("❌ Không tìm thấy user để duyệt!");
-            return res.send("<h1>Không tìm thấy user!</h1>");
-        }
-        console.log("✅ Đã duyệt thành công cho:", user.email);
-        res.send(`<h1>ĐÃ DUYỆT THÀNH CÔNG!</h1><p>Email: ${user.email} đã được kích hoạt.</p>`);
-    } catch (err) { 
-        console.error("❌ Lỗi duyệt:", err);
-        res.status(500).send("<h1>Lỗi ID không hợp lệ!</h1>"); 
-    }
+    await User.findByIdAndUpdate(req.params.id, { isApproved: true });
+    res.send("<h1>ĐÃ DUYỆT!</h1>");
 });
 
 app.post('/api/activate', async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
-    console.log("=> Activate request:", req.body.email);
-    console.log("=> User found:", user);
-    
-    if (user && user.isApproved === true) {
-        return res.json({ success: true, token: user.loginToken });
-    } else if (!user) {
-        return res.json({ success: false, message: 'Không tìm thấy email này!' });
-    } else {
-        return res.json({ success: false, message: 'Admin chưa duyệt!' });
-    }
+    const user = await User.findOne({ email: req.body.email, isApproved: true });
+    if (user) return res.json({ success: true, token: user.loginToken });
+    res.json({ success: false, message: 'Admin chưa duyệt!' });
 });
 
 app.post('/api/verify', async (req, res) => {
@@ -99,4 +53,4 @@ app.post('/api/verify', async (req, res) => {
     res.json({ success: false });
 });
 
-app.listen(process.env.PORT || 10000, () => console.log('🚀 Server is running...'));
+app.listen(process.env.PORT || 10000);
