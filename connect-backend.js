@@ -1,50 +1,40 @@
-const API_URL = 'https://advicecrypto.onrender.com';
-
 document.addEventListener('DOMContentLoaded', () => {
+    const API_URL = 'https://advicecrypto.onrender.com';
     const form = document.getElementById('contactForm');
     if (!form) return;
 
-    // Tự động kiểm tra Login lần sau
+    // 1. Tự động Login lần sau nếu đã kích hoạt
     const loginToken = localStorage.getItem('loginToken');
-    if (loginToken) {
-        fetch(`${API_URL}/api/verify`, { 
-            method: 'POST', 
-            headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify({ token: loginToken }) 
-        })
-        .then(res => res.json())
-        .then(data => { 
-            if(data.success) {
-                console.log("Auto-login thành công cho:", data.name);
-                alert("Chào mừng quay trở lại: " + data.name);
-            }
-        })
-        .catch(err => console.log("Lỗi auto-login:", err));
+    const isApproved = localStorage.getItem('isApproved');
+    if (loginToken && isApproved === 'true') {
+        verifyAutoLogin(loginToken);
     }
 
-    // Xử lý Submit Form
+    // 2. Xử lý Submit Form
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const name = form.querySelector('input[name="name"]').value;
-        const email = form.querySelector('input[name="email"]').value;
-        const phone = form.querySelector('input[name="phone"]').value;
+        const data = {
+            name: form.querySelector('input[name="name"]').value,
+            email: form.querySelector('input[name="email"]').value,
+            phone: form.querySelector('input[name="phone"]').value
+        };
 
         try {
             // Gửi dữ liệu về Server của Chủ Nhân (Render)
             const res = await fetch(`${API_URL}/api/submit`, {
                 method: 'POST', 
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name, email, phone })
+                body: JSON.stringify(data)
             });
-            const data = await res.json();
-            alert(data.message);
+            const result = await res.json();
+            alert(result.message);
             
             // Lưu email để dùng cho nút Kích hoạt
-            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userEmail', data.email);
             
-            // Hiện nút KÍCH HOẠT ĐĂNG NHẬP NGAY
-            if (!document.getElementById('activate-btn')) {
+            // Hiện nút KÍCH HOẠT ĐĂNG NHẬP NGAY nếu chưa duyệt
+            if (!result.success && !document.getElementById('activate-btn')) {
                 const btn = document.createElement('button');
                 btn.id = 'activate-btn';
                 btn.innerText = "KÍCH HOẠT ĐĂNG NHẬP NGAY";
@@ -71,3 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) { alert("Lỗi kết nối server!"); }
     });
 });
+
+// Hàm verify auto-login
+function verifyAutoLogin(token) {
+    fetch('https://advicecrypto.onrender.com/api/verify', { 
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify({ token }) 
+    })
+    .then(res => res.json()).then(data => { 
+        if(data.success) console.log("Auto-login thành công cho:", data.name);
+    });
+}
