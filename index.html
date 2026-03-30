@@ -968,30 +968,25 @@
         function closeModal() {
             document.getElementById('successModal').classList.add('hidden');
         }
-        // ==================== HÀM KÍCH HOẠT ĐĂNG NHẬP (đã sửa để đăng nhập tự động sau khi admin xác nhận) ====================
+        // ==================== HÀM KÍCH HOẠT ĐĂNG NHẬP (tự động kiểm tra dựa trên localStorage) ====================
         async function activateLoginOnThisDevice() {
-            let emailToActivate = lastSubmittedEmail || localStorage.getItem('lastSubmittedEmail');
+            let emailToActivate = localStorage.getItem('lastSubmittedEmail');
             if (!emailToActivate) {
-                const promptMsg = currentLanguage === 'vi' ? 'Nhập email bạn vừa đăng ký:' : 'Enter your registered email:';
-                emailToActivate = prompt(promptMsg);
-                if (!emailToActivate) return;
-                emailToActivate = emailToActivate.trim();
+                alert(currentLanguage === 'vi' ? 'Không tìm thấy dữ liệu đăng ký trên thiết bị này!' : 'Registration data not found on this device!');
+                return;
             }
-            
+
             try {
                 const response = await fetch('/api/activate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailToActivate })
+                    body: JSON.stringify({ email: emailToActivate.trim() })
                 });
                 const result = await response.json();
-                
+
                 if (result.success) {
-                    loginUser(emailToActivate);
-                    const successMsg = currentLanguage === 'vi'
-                        ? `✅ Đăng nhập thành công cho ${emailToActivate}!`
-                        : `✅ Login successful for ${emailToActivate}!`;
-                    alert(successMsg);
+                    loginUser(emailToActivate.trim());
+                    alert(currentLanguage === 'vi' ? '✅ Đăng nhập thành công!' : '✅ Login successful!');
                     closeModal();
                     localStorage.removeItem('lastSubmittedEmail');
                 } else {
@@ -1005,70 +1000,50 @@
             }
         }
         // ==================== FORM SUBMIT (Kết hợp FormSubmit + Database) ====================
-        const form = document.getElementById('contactForm');
-        if (form) {
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const button = this.querySelector('button[type="submit"]');
-                const originalHTML = button.innerHTML;
-                button.disabled = true;
-                button.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${currentLanguage === 'vi' ? 'Đang gửi...' : 'Sending...'}`;
-               
-                const data = {
-                    name: this.querySelector('input[name="name"]').value,
-                    email: this.querySelector('input[name="email"]').value,
-                    phone: this.querySelector('input[name="phone"]').value
-                };
-               
-                // 1. Gửi qua FormSubmit (luồng gửi mail ổn định nhất)
-                const formData = new FormData(this);
-                fetch('https://formsubmit.co/vietpridehb@gmail.com', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                // 2. Lưu vào Database của anh (API tự dựng)
-                try {
-                    const response = await fetch('/api/submit', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data)
-                    });
-                    
-                    document.getElementById('successModal').classList.remove('hidden');
-                    form.reset();
-                } catch (error) {
-                    console.error('Lỗi gửi dữ liệu:', error);
-                    alert(currentLanguage === 'vi' ? 'Có lỗi khi lưu dữ liệu!' : 'Error saving data!');
-                } finally {
-                    button.disabled = false;
-                    button.innerHTML = originalHTML;
-                }
-            });
-        }
+        function activateLoginOnThisDevice() {
+  let emailToActivate = window.lastSubmittedEmail || localStorage.getItem('lastSubmittedEmail');
+  if (!emailToActivate) {
+    const promptMsg = currentLanguage === 'vi' ? 'Nhập email bạn vừa đăng ký:' : 'Enter your registered email:';
+    emailToActivate = prompt(promptMsg)?.trim();
+    if (!emailToActivate) return;
+  }
+
+  const API_URL = 'https://advicecrypto.onrender.com';
+
+  fetch(`${API_URL}/api/activate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: emailToActivate })
+  })
+  .then(res => res.json())
+  .then(d2 => {
+    if (d2.success) {
+      localStorage.setItem('loginToken', d2.token);
+      loginUser(emailToActivate);
+
+      // Cập nhật confirmedEmails để gated content hoạt động
+      let confirmed = JSON.parse(localStorage.getItem('confirmedEmails') || '[]');
+      if (!confirmed.includes(emailToActivate)) {
+        confirmed.push(emailToActivate);
+        localStorage.setItem('confirmedEmails', JSON.stringify(confirmed));
+      }
+
+      alert(currentLanguage === 'vi' ? `✅ Đăng nhập thành công cho ${emailToActivate}!` : `✅ Login successful!`);
+      closeModal();
+      localStorage.removeItem('lastSubmittedEmail');
+    } else {
+      alert(d2.message || (currentLanguage === 'vi' ? 'Admin chưa duyệt!' : 'Admin has not approved yet!'));
+    }
+  })
+  .catch(() => alert('Lỗi kết nối. Vui lòng thử lại.'));
+}
         // ==================== XỬ LÝ LINK XÁC NHẬN TỪ EMAIL ADMIN (giữ nguyên) ====================
-        function handleConfirmationLink() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const confirmEmail = urlParams.get('confirm');
-            if (confirmEmail) {
-                let confirmedEmails = JSON.parse(localStorage.getItem('confirmedEmails') || '[]');
-                if (!confirmedEmails.includes(confirmEmail)) {
-                    confirmedEmails.push(confirmEmail);
-                    localStorage.setItem('confirmedEmails', JSON.stringify(confirmedEmails));
-                }
-                const msg = currentLanguage === 'vi'
-                    ? `✅ Admin đã xác nhận thành công cho ${confirmEmail}!\nNgười dùng có thể kích hoạt đăng nhập trên thiết bị của họ.`
-                    : `✅ Admin has confirmed ${confirmEmail}!\nUser can now activate login on their device.`;
-                alert(msg);
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        }
+        
         // ==================== KHỞI CHẠY ====================
         connectWebSocket();
         window.onload = () => {
             loggedInEmail = localStorage.getItem('loggedInEmail') || null;
             updateUserStatus();
-            handleConfirmationLink();
         };
         
     </script>    
