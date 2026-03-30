@@ -10,12 +10,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '.')));
 
-mongoose.connect(process.env.MONGO_URI);
-
-const User = mongoose.model('User', new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     name: String, email: { type: String, unique: true }, phone: String,
     isApproved: { type: Boolean, default: false }, loginToken: String
-}));
+});
+const User = mongoose.model('User', UserSchema);
 
 app.post('/api/submit', async (req, res) => {
     const { name, email, phone } = req.body;
@@ -26,7 +25,6 @@ app.post('/api/submit', async (req, res) => {
             await user.save();
         }
         
-        // Cấu hình SMTP trực tiếp trong hàm để đảm bảo cấu hình
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 465,
@@ -50,13 +48,17 @@ app.post('/api/submit', async (req, res) => {
         res.json({ success: true, message: 'Đã gửi thông tin! Vui lòng chờ Admin xác nhận qua email.' });
     } catch (error) {
         console.error('Lỗi khi gửi email:', error);
-        res.status(500).json({ success: false, message: 'Lỗi server khi gửi email: ' + error.message });
+        res.status(500).json({ success: false, message: 'Lỗi server khi gửi email' });
     }
 });
 
 app.get('/api/approve/:id', async (req, res) => {
-    await User.findByIdAndUpdate(req.params.id, { isApproved: true });
-    res.send("<h1>ĐÃ DUYỆT!</h1>");
+    try {
+        await User.findByIdAndUpdate(req.params.id, { isApproved: true });
+        res.send("<h1>ĐÃ DUYỆT THÀNH CÔNG!</h1>");
+    } catch (err) {
+        res.status(500).send("Lỗi duyệt!");
+    }
 });
 
 app.post('/api/activate', async (req, res) => {
@@ -75,4 +77,8 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(process.env.PORT || 10000);
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+        app.listen(process.env.PORT || 10000, () => console.log("Server running"));
+    })
+    .catch(err => console.error("Database connection failed:", err));
