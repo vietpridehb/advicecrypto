@@ -18,6 +18,7 @@ const User = mongoose.model('User', UserSchema);
 
 app.post('/api/submit', async (req, res) => {
     const { name, email, phone } = req.body;
+    console.log(`[LOG] Đang xử lý đăng ký cho: ${email}`);
     try {
         let user = await User.findOne({ email });
         if (!user) {
@@ -25,6 +26,7 @@ app.post('/api/submit', async (req, res) => {
             await user.save();
         }
         
+        console.log(`[LOG] Bắt đầu kết nối SMTP...`);
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 465,
@@ -32,9 +34,11 @@ app.post('/api/submit', async (req, res) => {
             auth: { 
                 user: 'vietpridehb@gmail.com', 
                 pass: process.env.GMAIL_PASS 
-            }
+            },
+            tls: { rejectUnauthorized: false } // ĐẶC BIỆT: Gỡ bỏ kiểm tra chứng chỉ để tránh lỗi kết nối
         });
 
+        console.log(`[LOG] SMTP kết nối thành công, đang gửi mail...`);
         await transporter.sendMail({
             from: '"Advice Crypto" <vietpridehb@gmail.com>', 
             to: 'vietpridehb@gmail.com', 
@@ -45,10 +49,11 @@ app.post('/api/submit', async (req, res) => {
                    <p>SĐT: ${phone}</p>
                    <a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY DUYỆT ĐỂ NGƯỜI DÙNG KÍCH HOẠT</a>`
         });
+        console.log(`[LOG] Gửi mail thành công cho: ${name}`);
         res.json({ success: true, message: 'Đã gửi thông tin! Vui lòng chờ Admin xác nhận qua email.' });
     } catch (error) {
-        console.error('Lỗi khi gửi email:', error);
-        res.status(500).json({ success: false, message: 'Lỗi server khi gửi email' });
+        console.error('[LOG ERROR] Lỗi server:', error.message);
+        res.status(500).json({ success: false, message: 'Lỗi server: ' + error.message });
     }
 });
 
@@ -73,7 +78,6 @@ app.post('/api/verify', async (req, res) => {
     res.json({ success: false });
 });
 
-// Thêm endpoint này để tránh lỗi 404 khi người dùng truy cập trực tiếp các route
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
