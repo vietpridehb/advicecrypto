@@ -1049,31 +1049,6 @@
                 }
             });
         }
-/*        // ==================== XỬ LÝ LINK XÁC NHẬN TỪ EMAIL ADMIN (giữ nguyên) ====================
-        function handleConfirmationLink() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const confirmEmail = urlParams.get('confirm');
-            if (confirmEmail) {
-                let confirmedEmails = JSON.parse(localStorage.getItem('confirmedEmails') || '[]');
-                if (!confirmedEmails.includes(confirmEmail)) {
-                    confirmedEmails.push(confirmEmail);
-                    localStorage.setItem('confirmedEmails', JSON.stringify(confirmedEmails));
-                }
-                const msg = currentLanguage === 'vi'
-                    ? `✅ Admin đã xác nhận thành công cho ${confirmEmail}!\nNgười dùng có thể kích hoạt đăng nhập trên thiết bị của họ.`
-                    : `✅ Admin has confirmed ${confirmEmail}!\nUser can now activate login on their device.`;
-                alert(msg);
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        }
-*/        
-        // ==================== KHỞI CHẠY ====================
-        connectWebSocket();
-        window.onload = () => {
-            loggedInEmail = localStorage.getItem('loggedInEmail') || null;
-            updateUserStatus();
-            //handleConfirmationLink();
-        };
         
     </script>    
     <script src="connect-backend.js"></script>
