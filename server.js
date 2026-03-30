@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const nodemailer = require('nodemailer');
 const cors = require('cors');
 const crypto = require('crypto');
 const path = require('path');
@@ -20,17 +19,7 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', UserSchema);
 
-// Dùng Nodemailer với cấu hình linh động từ Render
-const transporter = nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
-    port: 587,
-    auth: {
-        user: process.env.BREVO_SENDER_EMAIL, 
-        pass: process.env.BREVO_API_KEY
-    }
-});
-
-// ====================== SUBMIT ======================
+// ====================== SUBMIT (Chỉ lưu Database, không gửi mail) ======================
 app.post('/api/submit', async (req, res) => {
   const { name, email, phone } = req.body;
   try {
@@ -51,20 +40,10 @@ app.post('/api/submit', async (req, res) => {
       await user.save();
     }
 
-    // GỬI EMAIL QUA SMTP BREVO
-    await transporter.sendMail({
-        from: `"${process.env.BREVO_SENDER_NAME || 'CryptoAdvisor'}" <${process.env.BREVO_SENDER_EMAIL}>`,
-        to: 'vietpridehb@gmail.com',
-        subject: `Đăng ký mới: ${user.name}`,
-        html: `<p>Có người đăng ký mới:</p>
-               <p>Tên: ${user.name}</p><p>Email: ${user.email}</p><p>SĐT: ${user.phone}</p>
-               <a href="${process.env.BASE_URL}/api/approve/${user._id}" style="padding:10px; background:green; color:white;">DUYỆT</a>`
-    });
-
-    res.json({ success: true, message: 'Đã lưu thông tin và gửi mail!' });
+    res.json({ success: true, message: 'Đã lưu thông tin!' });
   } catch (error) {
     console.error('Lỗi submit:', error);
-    res.status(500).json({ success: false, message: 'Lỗi server khi lưu thông tin: ' + error.message });
+    res.status(500).json({ success: false, message: 'Lỗi server khi lưu thông tin' });
   }
 });
 
