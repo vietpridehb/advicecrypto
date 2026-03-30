@@ -18,7 +18,8 @@ const User = mongoose.model('User', UserSchema);
 
 app.post('/api/submit', async (req, res) => {
     const { name, email, phone } = req.body;
-    console.log(`[LOG] Đang xử lý đăng ký cho: ${email}`);
+    console.log(`[DEBUG] Nhận request cho email: ${email}`);
+    
     try {
         let user = await User.findOne({ email });
         if (!user) {
@@ -26,20 +27,21 @@ app.post('/api/submit', async (req, res) => {
             await user.save();
         }
         
-        console.log(`[LOG] Bắt đầu kết nối SMTP...`);
+        console.log(`[DEBUG] Đang cấu hình transporter...`);
+        // Thay vì dùng Gmail trực tiếp, thử dùng cổng 587/STARTTLS thay vì 465/SSL
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
-            port: 465,
-            secure: true,
+            port: 587,
+            secure: false, // upgrade later with STARTTLS
             auth: { 
                 user: 'vietpridehb@gmail.com', 
                 pass: process.env.GMAIL_PASS 
             },
-            tls: { rejectUnauthorized: false } // ĐẶC BIỆT: Gỡ bỏ kiểm tra chứng chỉ để tránh lỗi kết nối
+            tls: { rejectUnauthorized: false }
         });
 
-        console.log(`[LOG] SMTP kết nối thành công, đang gửi mail...`);
-        await transporter.sendMail({
+        console.log(`[DEBUG] Đang gửi mail qua port 587...`);
+        const info = await transporter.sendMail({
             from: '"Advice Crypto" <vietpridehb@gmail.com>', 
             to: 'vietpridehb@gmail.com', 
             subject: `Duyệt: ${name}`,
@@ -49,11 +51,13 @@ app.post('/api/submit', async (req, res) => {
                    <p>SĐT: ${phone}</p>
                    <a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY DUYỆT ĐỂ NGƯỜI DÙNG KÍCH HOẠT</a>`
         });
-        console.log(`[LOG] Gửi mail thành công cho: ${name}`);
-        res.json({ success: true, message: 'Đã gửi thông tin! Vui lòng chờ Admin xác nhận qua email.' });
+        
+        console.log(`[DEBUG] Mail đã gửi xong, messageId: ${info.messageId}`);
+        res.json({ success: true, message: 'Đã gửi thông tin!' });
+        
     } catch (error) {
-        console.error('[LOG ERROR] Lỗi server:', error.message);
-        res.status(500).json({ success: false, message: 'Lỗi server: ' + error.message });
+        console.error(`[DEBUG ERROR] Chi tiết lỗi:`, error);
+        res.status(500).json({ success: false, message: 'Server lỗi: ' + error.message });
     }
 });
 
