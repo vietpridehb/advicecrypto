@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const crypto = require('crypto');
 const path = require('path');
+
 const app = express();
 
 app.use(cors());
@@ -19,7 +20,46 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', UserSchema);
 
-// ====================== SUBMIT (Chỉ lưu Database, không gửi mail) ======================
+// ==================== BREVO API (thay vì Gmail SMTP) ====================
+async function sendAdminEmail(user) {
+  const approveLink = `${process.env.BASE_URL || 'https://advicecrypto.onrender.com'}/api/approve/${user._id}`;
+
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'api-key': process.env.BREVO_API_KEY,
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      sender: {
+        name: process.env.BREVO_SENDER_NAME || 'CryptoAdvisor',
+        email: process.env.BREVO_SENDER_EMAIL
+      },
+      to: [{ email: 'vietpridehb@gmail.com' }],
+      subject: `Đăng ký mới - Cần duyệt: ${user.name} (${user.email})`,
+      htmlContent: `
+        <h1 style="color:#10b981">Có đăng ký mới!</h1>
+        <p><strong>Họ tên:</strong> ${user.name}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Phone:</strong> ${user.phone}</p>
+        <br>
+        <a href="${approveLink}" 
+           style="background:#10b981;color:white;padding:15px 25px;border-radius:8px;text-decoration:none;font-weight:bold;">
+          ✅ CLICK ĐỂ DUYỆT & CHO PHÉP ĐĂNG NHẬP
+        </a>
+        <p style="margin-top:20px;color:#666;">Sau khi click, người dùng sẽ kích hoạt được ngay.</p>
+      `
+    })
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error('Brevo error: ' + errText);
+  }
+}
+
+// ====================== SUBMIT ======================
 app.post('/api/submit', async (req, res) => {
   const { name, email, phone } = req.body;
   try {
@@ -34,13 +74,17 @@ app.post('/api/submit', async (req, res) => {
       });
       await user.save();
     } else {
+      // Cập nhật lại token nếu đã tồn tại
       user.name = name;
       user.phone = phone;
       user.loginToken = crypto.randomBytes(32).toString('hex');
       await user.save();
     }
 
-    res.json({ success: true, message: 'Đã lưu thông tin!' });
+    // GỬI EMAIL CHO ADMIN
+    await sendAdminEmail(user);
+
+    res.json({ success: true, message: 'Đã lưu thông tin! Email xác nhận đã gửi cho admin.' });
   } catch (error) {
     console.error('Lỗi submit:', error);
     res.status(500).json({ success: false, message: 'Lỗi server khi lưu thông tin' });
