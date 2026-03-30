@@ -73,7 +73,8 @@ app.post('/api/verify', async (req, res) => {
     res.json({ success: false });
 });
 
-app.get('/', (req, res) => {
+// Thêm endpoint này để tránh lỗi 404 khi người dùng truy cập trực tiếp các route
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
