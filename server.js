@@ -63,10 +63,18 @@ app.post('/api/submit', async (req, res) => {
 
 app.get('/api/approve/:id', async (req, res) => {
     try {
-        await User.findByIdAndUpdate(req.params.id, { isApproved: true });
-        res.send("<h1>ĐÃ DUYỆT THÀNH CÔNG!</h1>");
+        console.log(`[DEBUG] Nhận request duyệt ID: ${req.params.id}`);
+        const user = await User.findByIdAndUpdate(req.params.id, { isApproved: true }, { new: true });
+        if (user) {
+            console.log(`[DEBUG] Đã cập nhật isApproved = true cho: ${user.email}`);
+            res.send(`<h1>ĐÃ DUYỆT THÀNH CÔNG!</h1><p>Email: ${user.email} đã được phép đăng nhập.</p>`);
+        } else {
+            console.log(`[DEBUG] Không tìm thấy user với ID: ${req.params.id}`);
+            res.status(404).send("<h1>Không tìm thấy người dùng!</h1>");
+        }
     } catch (err) {
-        res.status(500).send("Lỗi duyệt!");
+        console.error(`[DEBUG ERROR] Lỗi khi duyệt:`, err);
+        res.status(500).send("<h1>Lỗi duyệt: " + err.message + "</h1>");
     }
 });
 
