@@ -24,16 +24,27 @@ const transporter = nodemailer.createTransport({
 
 app.post('/api/submit', async (req, res) => {
     const { name, email, phone } = req.body;
-    let user = await User.findOne({ email });
-    if (!user) {
-        user = new User({ name, email, phone, loginToken: crypto.randomBytes(32).toString('hex') });
-        await user.save();
+    try {
+        let user = await User.findOne({ email });
+        if (!user) {
+            user = new User({ name, email, phone, loginToken: crypto.randomBytes(32).toString('hex') });
+            await user.save();
+        }
+        await transporter.sendMail({
+            from: 'Advice Crypto <vietpridehb@gmail.com>', 
+            to: 'vietpridehb@gmail.com', 
+            subject: `Duyệt: ${name}`,
+            html: `<p>Có người đăng ký mới:</p>
+                   <p>Tên: ${name}</p>
+                   <p>Email: ${email}</p>
+                   <p>SĐT: ${phone}</p>
+                   <a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY DUYỆT ĐỂ NGƯỜI DÙNG KÍCH HOẠT</a>`
+        });
+        res.json({ success: false, message: 'Đã gửi thông tin! Vui lòng chờ Admin xác nhận qua email.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Lỗi server' });
     }
-    await transporter.sendMail({
-        from: 'Advice Crypto', to: 'vietpridehb@gmail.com', subject: `Duyệt: ${name}`,
-        html: `<a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY DUYỆT</a>`
-    });
-    res.json({ success: false, message: 'Chờ Admin duyệt!' });
 });
 
 app.get('/api/approve/:id', async (req, res) => {
@@ -51,6 +62,10 @@ app.post('/api/verify', async (req, res) => {
     const user = await User.findOne({ loginToken: req.body.token });
     if (user && user.isApproved) return res.json({ success: true, name: user.name });
     res.json({ success: false });
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(process.env.PORT || 10000);
