@@ -4,23 +4,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('contactForm');
     if (!form) return;
 
-    // 1. Tự động Login lần sau nếu đã kích hoạt
+    // Tự động kiểm tra Login lần sau
     const loginToken = localStorage.getItem('loginToken');
-    const isApproved = localStorage.getItem('isApproved');
-    if (loginToken && isApproved === 'true') {
-        verifyAutoLogin(loginToken);
+    if (loginToken) {
+        fetch(`${API_URL}/api/verify`, { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({ token: loginToken }) 
+        })
+        .then(res => res.json())
+        .then(data => { 
+            if(data.success) {
+                console.log("Auto-login thành công cho:", data.name);
+                alert("Chào mừng quay trở lại: " + data.name);
+            }
+        })
+        .catch(err => console.log("Lỗi auto-login:", err));
     }
 
-    // 2. Xử lý Submit Form
+    // Xử lý Submit Form
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
         const name = form.querySelector('input[name="name"]').value;
         const email = form.querySelector('input[name="email"]').value;
         const phone = form.querySelector('input[name="phone"]').value;
 
         try {
+            // Gửi dữ liệu về Server của Chủ Nhân (Render)
             const res = await fetch(`${API_URL}/api/submit`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ name, email, phone })
             });
             const data = await res.json();
@@ -38,7 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.onclick = async () => {
                     const emailToActivate = localStorage.getItem('userEmail');
                     const res2 = await fetch(`${API_URL}/api/activate`, {
-                        method: 'POST', headers: {'Content-Type': 'application/json'}, 
+                        method: 'POST', 
+                        headers: {'Content-Type': 'application/json'}, 
                         body: JSON.stringify({ email: emailToActivate })
                     });
                     const data2 = await res2.json();
@@ -51,19 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         alert(data2.message || "Admin chưa duyệt!");
                     }
                 };
-                form.parentNode.insertBefore(btn, form.nextSibling);
+                form.appendChild(btn);
             }
         } catch (err) { alert("Lỗi kết nối server!"); }
     });
 });
-
-// Hàm verify auto-login
-function verifyAutoLogin(token) {
-    fetch(`${API_URL}/api/verify`, { 
-        method: 'POST', headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify({ token }) 
-    })
-    .then(res => res.json()).then(data => { 
-        if(data.success) console.log("Auto-login thành công cho:", data.name);
-    });
-}
