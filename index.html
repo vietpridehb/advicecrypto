@@ -1017,7 +1017,7 @@
                     });
                     const result = await response.json();
                     
-                    if (response.ok) {
+                    if (result.success) {
                         document.getElementById('successModal').classList.remove('hidden');
                         form.reset();
                     } else {

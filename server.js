@@ -40,7 +40,7 @@ app.post('/api/submit', async (req, res) => {
                    <p>SĐT: ${phone}</p>
                    <a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY DUYỆT ĐỂ NGƯỜI DÙNG KÍCH HOẠT</a>`
         });
-        res.json({ success: false, message: 'Đã gửi thông tin! Vui lòng chờ Admin xác nhận qua email.' });
+        res.json({ success: true, message: 'Đã gửi thông tin! Vui lòng chờ Admin xác nhận qua email.' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Lỗi server' });
