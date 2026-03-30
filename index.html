@@ -969,7 +969,7 @@
             document.getElementById('successModal').classList.add('hidden');
         }
         // ==================== HÀM KÍCH HOẠT ĐĂNG NHẬP (đã sửa để đăng nhập tự động sau khi admin xác nhận) ====================
-        function activateLoginOnThisDevice() {
+        async function activateLoginOnThisDevice() {
             let emailToActivate = lastSubmittedEmail || localStorage.getItem('lastSubmittedEmail');
             if (!emailToActivate) {
                 const promptMsg = currentLanguage === 'vi' ? 'Nhập email bạn vừa đăng ký:' : 'Enter your registered email:';
@@ -977,21 +977,32 @@
                 if (!emailToActivate) return;
                 emailToActivate = emailToActivate.trim();
             }
-            const confirmedEmails = JSON.parse(localStorage.getItem('confirmedEmails') || '[]');
-            if (!confirmedEmails.includes(emailToActivate)) {
-                const msg = currentLanguage === 'vi'
-                    ? 'Bạn chưa được kích hoạt đăng nhập. Hãy liên hệ với Telegram @LamNhien'
-                    : 'You have not been activated yet. Please contact Telegram @LamNhien';
-                alert(msg);
-                return;
+            
+            try {
+                const response = await fetch('/api/activate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailToActivate })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    loginUser(emailToActivate);
+                    const successMsg = currentLanguage === 'vi'
+                        ? `✅ Đăng nhập thành công cho ${emailToActivate}!`
+                        : `✅ Login successful for ${emailToActivate}!`;
+                    alert(successMsg);
+                    closeModal();
+                    localStorage.removeItem('lastSubmittedEmail');
+                } else {
+                    const msg = currentLanguage === 'vi'
+                        ? 'Bạn chưa được kích hoạt đăng nhập. Hãy liên hệ với Telegram @LamNhien'
+                        : 'You have not been activated yet. Please contact Telegram @LamNhien';
+                    alert(result.message || msg);
+                }
+            } catch (err) {
+                alert(currentLanguage === 'vi' ? 'Lỗi kết nối server!' : 'Server connection error!');
             }
-            loginUser(emailToActivate);
-            const successMsg = currentLanguage === 'vi'
-                ? `✅ Đăng nhập thành công cho ${emailToActivate}!`
-                : `✅ Login successful for ${emailToActivate}!`;
-            alert(successMsg);
-            closeModal();
-            localStorage.removeItem('lastSubmittedEmail');
         }
         // ==================== FORM SUBMIT & HANDLE CONFIRMATION (giữ nguyên logic, chỉ thêm lưu email để kích hoạt luôn hoạt động) ====================
         const form = document.getElementById('contactForm');
@@ -1015,6 +1026,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     });
+                    
                     const result = await response.json();
                     
                     if (result.success) {
@@ -1025,7 +1037,7 @@
                     }
                 } catch (error) {
                     console.error('Lỗi gửi form:', error);
-                    alert(currentLanguage === 'vi' ? 'Có lỗi xảy ra khi gửi thông tin.' : 'An error occurred.');
+                    alert('Lỗi kết nối server, hãy thử lại sau!');
                 } finally {
                     button.disabled = false;
                     button.innerHTML = originalHTML;
