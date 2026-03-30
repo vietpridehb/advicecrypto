@@ -39,7 +39,7 @@ app.post('/api/submit', async (req, res) => {
             user = new User({ name, email, phone, loginToken: crypto.randomBytes(32).toString('hex') });
             await user.save();
         }
-        
+
         await transporter.sendMail({
             from: 'Advice Crypto <vietpridehb@gmail.com>',
             to: 'vietpridehb@gmail.com',
@@ -47,8 +47,17 @@ app.post('/api/submit', async (req, res) => {
             html: `Khách ${name} muốn vào web.<br>
                    Email: ${email}<br>
                    SĐT: ${phone}<br>
-                   <a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY ĐỂ DUYỆT ĐĂNG KÝ</a>`
+                   <a href="https://advicecrypto.onrender.com/api/approve/${user._id}">BẤM ĐÂY ĐỂ DUYỆT ĐĂNG KÝ</a>`
         });
+      /*      await transporter.sendMail({
+            from: 'Advice Crypto <vietpridehb@gmail.com>',
+            to: 'vietpridehb@gmail.com',
+            subject: `Duyệt đăng ký: ${name}`,
+            html: `Khách ${name} muốn vào web.<br>
+                   Email: ${email}<br>
+                   SĐT: ${phone}<br>
+                   <a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY ĐỂ DUYỆT ĐĂNG KÝ</a>`
+        });  */
         res.json({ success: false, message: 'Đang chờ Admin duyệt!' });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
