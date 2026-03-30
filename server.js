@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const nodemailer = require('nodemailer');
 const cors = require('cors');
 const crypto = require('crypto');
 const path = require('path');
@@ -16,65 +15,28 @@ const UserSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', UserSchema);
 
+// Endpoint lưu thông tin user vào database (chỉ lưu, không gửi mail)
 app.post('/api/submit', async (req, res) => {
     const { name, email, phone } = req.body;
-    console.log(`[DEBUG] Nhận request cho email: ${email}`);
-    
     try {
         let user = await User.findOne({ email });
         if (!user) {
             user = new User({ name, email, phone, loginToken: crypto.randomBytes(32).toString('hex') });
             await user.save();
         }
-        
-        console.log(`[DEBUG] Đang cấu hình transporter...`);
-        // Thay vì dùng Gmail trực tiếp, thử dùng cổng 587/STARTTLS thay vì 465/SSL
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false, // upgrade later with STARTTLS
-            auth: { 
-                user: 'vietpridehb@gmail.com', 
-                pass: process.env.GMAIL_PASS 
-            },
-            tls: { rejectUnauthorized: false }
-        });
-
-        console.log(`[DEBUG] Đang gửi mail qua port 587...`);
-        const info = await transporter.sendMail({
-            from: '"Advice Crypto" <vietpridehb@gmail.com>', 
-            to: 'vietpridehb@gmail.com', 
-            subject: `Duyệt: ${name}`,
-            html: `<p>Có người đăng ký mới:</p>
-                   <p>Tên: ${name}</p>
-                   <p>Email: ${email}</p>
-                   <p>SĐT: ${phone}</p>
-                   <a href="${process.env.BASE_URL}/api/approve/${user._id}">BẤM ĐÂY DUYỆT ĐỂ NGƯỜI DÙNG KÍCH HOẠT</a>`
-        });
-        
-        console.log(`[DEBUG] Mail đã gửi xong, messageId: ${info.messageId}`);
-        res.json({ success: true, message: 'Đã gửi thông tin!' });
-        
+        res.json({ success: true, message: 'Đã lưu thông tin!' });
     } catch (error) {
-        console.error(`[DEBUG ERROR] Chi tiết lỗi:`, error);
-        res.status(500).json({ success: false, message: 'Server lỗi: ' + error.message });
+        console.error('Lỗi khi lưu DB:', error);
+        res.status(500).json({ success: false, message: 'Lỗi server khi lưu thông tin' });
     }
 });
 
 app.get('/api/approve/:id', async (req, res) => {
     try {
-        console.log(`[DEBUG] Nhận request duyệt ID: ${req.params.id}`);
-        const user = await User.findByIdAndUpdate(req.params.id, { isApproved: true }, { new: true });
-        if (user) {
-            console.log(`[DEBUG] Đã cập nhật isApproved = true cho: ${user.email}`);
-            res.send(`<h1>ĐÃ DUYỆT THÀNH CÔNG!</h1><p>Email: ${user.email} đã được phép đăng nhập.</p>`);
-        } else {
-            console.log(`[DEBUG] Không tìm thấy user với ID: ${req.params.id}`);
-            res.status(404).send("<h1>Không tìm thấy người dùng!</h1>");
-        }
+        await User.findByIdAndUpdate(req.params.id, { isApproved: true });
+        res.send("<h1>ĐÃ DUYỆT THÀNH CÔNG!</h1>");
     } catch (err) {
-        console.error(`[DEBUG ERROR] Lỗi khi duyệt:`, err);
-        res.status(500).send("<h1>Lỗi duyệt: " + err.message + "</h1>");
+        res.status(500).send("Lỗi duyệt!");
     }
 });
 
@@ -96,6 +58,6 @@ app.get('*', (req, res) => {
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
-        app.listen(process.env.PORT || 10000, () => console.log("Server running"));
+        app.listen(process.env.PORT || 10000, () => console.log("Server running (DB mode only)"));
     })
     .catch(err => console.error("Database connection failed:", err));
