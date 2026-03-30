@@ -17,11 +17,6 @@ const User = mongoose.model('User', new mongoose.Schema({
     isApproved: { type: Boolean, default: false }, loginToken: String
 }));
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user: 'vietpridehb@gmail.com', pass: process.env.GMAIL_PASS }
-});
-
 app.post('/api/submit', async (req, res) => {
     const { name, email, phone } = req.body;
     try {
@@ -30,8 +25,20 @@ app.post('/api/submit', async (req, res) => {
             user = new User({ name, email, phone, loginToken: crypto.randomBytes(32).toString('hex') });
             await user.save();
         }
+        
+        // Cấu hình SMTP trực tiếp trong hàm để đảm bảo cấu hình
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: { 
+                user: 'vietpridehb@gmail.com', 
+                pass: process.env.GMAIL_PASS 
+            }
+        });
+
         await transporter.sendMail({
-            from: 'Advice Crypto <vietpridehb@gmail.com>', 
+            from: '"Advice Crypto" <vietpridehb@gmail.com>', 
             to: 'vietpridehb@gmail.com', 
             subject: `Duyệt: ${name}`,
             html: `<p>Có người đăng ký mới:</p>
@@ -42,8 +49,8 @@ app.post('/api/submit', async (req, res) => {
         });
         res.json({ success: true, message: 'Đã gửi thông tin! Vui lòng chờ Admin xác nhận qua email.' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Lỗi server' });
+        console.error('Lỗi khi gửi email:', error);
+        res.status(500).json({ success: false, message: 'Lỗi server khi gửi email: ' + error.message });
     }
 });
 
