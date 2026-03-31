@@ -369,7 +369,7 @@
     </section>
 
 
- <!-- SUCCESS MODAL - KHÔNG CUỘN, VỪA VẶN 100% -->
+<!-- SUCCESS MODAL - KHÔNG CUỘN, VỪA VẶN 100% -->
 <div id="successModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[9999] px-4 md:px-6">
     <div class="modal bg-gradient-to-br from-slate-900 to-slate-800 w-full max-w-[600px] rounded-3xl shadow-2xl border border-amber-400/30">
         
@@ -393,13 +393,12 @@
                         <span>QR Code</span>
                     </button>
                 </div>
-                <div class="flex items-center justify-between bg-black p-2 rounded-lg">
-                    <p class="font-mono text-xs break-all flex-1 mr-2">0x27a81e49488E2B81248C9Eb7cB7F125055E562B7</p>
+                <div class="flex items-center bg-black p-2 rounded-lg">
                     <button onclick="copyAddress('0x27a81e49488E2B81248C9Eb7cB7F125055E562B7')" 
-                            class="text-amber-400 hover:text-amber-300 text-xs font-medium flex items-center gap-x-1">
+                            class="text-amber-400 hover:text-amber-300 mr-2 text-sm">
                         <i class="fa-regular fa-copy"></i>
-                        <span>Sao chép</span>
                     </button>
+                    <p class="font-mono text-xs break-all">0x27a81e49488E2B81248C9Eb7cB7F125055E562B7</p>
                 </div>
 
                 <!-- USDT TRC-20 -->
@@ -410,13 +409,12 @@
                         <span>QR Code</span>
                     </button>
                 </div>
-                <div class="flex items-center justify-between bg-black p-2 rounded-lg">
-                    <p class="font-mono text-xs break-all flex-1 mr-2">TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV</p>
+                <div class="flex items-center bg-black p-2 rounded-lg">
                     <button onclick="copyAddress('TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV')" 
-                            class="text-amber-400 hover:text-amber-300 text-xs font-medium flex items-center gap-x-1">
+                            class="text-amber-400 hover:text-amber-300 mr-2 text-sm">
                         <i class="fa-regular fa-copy"></i>
-                        <span>Sao chép</span>
                     </button>
+                    <p class="font-mono text-xs break-all">TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV</p>
                 </div>
 
                 <!-- Cảnh báo kiểm tra ví -->
@@ -1104,6 +1102,16 @@ function showQR(type) {
 function hideQR() {
     const modal = document.getElementById('qrModal');
     if (modal) modal.classList.add('hidden');
+}
+        
+
+        function copyAddress(address) {
+    navigator.clipboard.writeText(address).then(() => {
+        // Hiển thị thông báo nhẹ (có thể dùng alert hoặc tooltip tạm thời)
+        alert('✅ Đã sao chép: ' + address);
+    }).catch(() => {
+        alert('❌ Không thể sao chép, vui lòng thử lại.');
+    });
 }
         
     </script>
