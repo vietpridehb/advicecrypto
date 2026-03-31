@@ -369,73 +369,70 @@
     </section>
 
 
- <!-- SUCCESS MODAL - ĐÃ MỞ RỘNG KHUNG + SẮP XẾP LẠI BỐ CỤC -->
+ <!-- SUCCESS MODAL - KHÔNG CUỘN, VỪA VẶN 100% -->
 <div id="successModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[9999] px-4 md:px-6">
-    <div class="modal bg-gradient-to-br from-slate-900 to-slate-800 w-full max-w-[600px] rounded-3xl shadow-2xl border border-amber-400/30 overflow-hidden">
+    <div class="modal bg-gradient-to-br from-slate-900 to-slate-800 w-full max-w-[600px] rounded-3xl shadow-2xl border border-amber-400/30">
         
-        <!-- HEADER: giữ nguyên nội dung, chỉ tăng padding ngang lên 1cm -->
-        <div class="px-[1cm] pt-6 pb-4 text-center border-b border-slate-700">
-            <div class="w-16 h-16 mx-auto bg-emerald-500/10 text-emerald-400 rounded-3xl flex items-center justify-center text-5xl mb-3">✅</div>
-            <h3 class="text-3xl font-bold text-white tracking-tighter" data-key="modal-success">Đăng ký thành công!</h3>
-            <p class="text-slate-400 mt-2 text-base">Thông tin đã được gửi tới <span class="font-semibold text-white">vietpridehb@gmail.com</span><br>Admin sẽ click xác nhận để cho phép bạn đăng nhập.</p>
+        <!-- HEADER: giảm padding trên/dưới -->
+        <div class="px-[1cm] pt-5 pb-2 text-center border-b border-slate-700">
+            <div class="w-14 h-14 mx-auto bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-4xl mb-2">✅</div>
+            <h3 class="text-2xl font-bold text-white tracking-tighter" data-key="modal-success">Đăng ký thành công!</h3>
+            <p class="text-slate-400 mt-1 text-sm">Thông tin đã được gửi tới <span class="font-semibold text-white">vietpridehb@gmail.com</span><br>Admin sẽ click xác nhận để cho phép bạn đăng nhập.</p>
         </div>
 
-        <!-- KHU VỰC THANH TOÁN: tăng padding ngang lên 1cm, giữ nguyên nội dung và các nút QR -->
-        <div class="px-[1cm] py-6">
-            <p class="uppercase text-amber-400 text-xs font-semibold tracking-[1px] mb-5 text-center">VUI LÒNG THANH TOÁN ĐỂ HOÀN TẤT GÓI 20.000 USD</p>
+        <!-- KHU VỰC THANH TOÁN: giảm padding dọc -->
+        <div class="px-[1cm] py-3">
+            <p class="uppercase text-amber-400 text-xs font-semibold tracking-[1px] mb-3 text-center">VUI LÒNG THANH TOÁN ĐỂ HOÀN TẤT GÓI 20.000 USD</p>
             
-            <div class="bg-slate-950 rounded-2xl p-5 border border-amber-400/30">
+            <div class="bg-slate-950 rounded-xl p-4 border border-amber-400/30">
                 <!-- USDT ERC-20 -->
-                <div class="flex justify-between items-center mb-4">
-                    <span class="font-medium">USDT (ERC-20 - Mạng ETH)</span>
-                    <button onclick="showQR('eth')" class="flex items-center gap-x-2 text-amber-400 hover:text-amber-300 text-sm font-medium">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-medium text-sm">USDT (ERC-20 - Mạng ETH)</span>
+                    <button onclick="showQR('eth')" class="flex items-center gap-x-2 text-amber-400 hover:text-amber-300 text-xs font-medium">
                         <i class="fa-solid fa-qrcode"></i>
                         <span>QR Code</span>
                     </button>
                 </div>
-                <p class="font-mono text-sm break-all bg-black p-3 rounded-xl mb-6">0x27a81e49488E2B81248C9Eb7cB7F125055E562B7</p>
+                <p class="font-mono text-xs break-all bg-black p-2 rounded-lg mb-4">0x27a81e49488E2B81248C9Eb7cB7F125055E562B7</p>
 
                 <!-- USDT TRC-20 -->
-                <div class="flex justify-between items-center mb-4">
-                    <span class="font-medium">USDT (TRC20 - Mạng Tron)</span>
-                    <button onclick="showQR('tron')" class="flex items-center gap-x-2 text-amber-400 hover:text-amber-300 text-sm font-medium">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-medium text-sm">USDT (TRC20 - Mạng Tron)</span>
+                    <button onclick="showQR('tron')" class="flex items-center gap-x-2 text-amber-400 hover:text-amber-300 text-xs font-medium">
                         <i class="fa-solid fa-qrcode"></i>
                         <span>QR Code</span>
                     </button>
                 </div>
-                <p class="font-mono text-sm break-all bg-black p-3 rounded-xl">TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV</p>
+                <p class="font-mono text-xs break-all bg-black p-2 rounded-lg">TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV</p>
 
                 <!-- Cảnh báo kiểm tra ví -->
-                <div class="flex items-start gap-x-2 text-amber-300 text-xs bg-amber-900/30 p-3 rounded-2xl border border-amber-400/20 mt-5">
+                <div class="flex items-start gap-x-2 text-amber-300 text-xs bg-amber-900/30 p-2 rounded-xl border border-amber-400/20 mt-4">
                     <i class="fa-solid fa-triangle-exclamation mt-px"></i>
                     <p>Chuyển từ <strong>1 USDT đến 5 USDT</strong> để kiểm tra ví trước khi chuyển đủ số tiền.</p>
                 </div>
             </div>
         </div>
 
-        <!-- KHU VỰC CUỐI: sắp xếp lại logic: nút kích hoạt → thông tin + liên kết Telegram → nút đóng -->
-        <div class="px-[1cm] pb-6 pt-2 border-t border-slate-700">
-            <!-- NÚT KÍCH HOẠT CHÍNH -->
+        <!-- KHU VỰC CUỐI: giảm padding dọc, sắp xếp gọn -->
+        <div class="px-[1cm] pb-5 pt-2 border-t border-slate-700">
             <button onclick="activateLoginOnThisDevice()" 
-                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-4 rounded-3xl text-lg flex items-center justify-center gap-x-3 shadow-lg transition-all">
+                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-3 rounded-2xl text-base flex items-center justify-center gap-x-2 shadow-lg transition-all">
                 <i class="fa-solid fa-check-circle"></i>
                 KÍCH HOẠT ĐĂNG NHẬP NGAY
             </button>
 
-            <!-- THÔNG TIN LIÊN HỆ TELEGRAM (gọn, dễ đọc) -->
-            <div class="mt-6 bg-slate-800/50 rounded-2xl p-4 text-center">
-                <p class="text-slate-300 text-sm leading-relaxed">
-                    📌 Sau khi thanh toán, vui lòng liên hệ ngay Telegram <strong class="text-amber-400">@Lam_Moc</strong> để xác nhận và bắt đầu lịch tư vấn.
+            <div class="mt-4 bg-slate-800/50 rounded-xl p-3 text-center">
+                <p class="text-slate-300 text-xs leading-relaxed">
+                    📌 Sau khi thanh toán, vui lòng liên hệ ngay Telegram <strong class="text-amber-400">@LamNhien</strong> để xác nhận và bắt đầu lịch tư vấn.
                 </p>
-                <a href="https://t.me/Lam_Moc" target="_blank" rel="noopener" 
-                   class="mt-4 inline-flex items-center justify-center gap-x-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-semibold py-3 px-6 rounded-3xl text-base w-full transition-colors">
-                    <i class="fa-brands fa-telegram text-2xl"></i>
-                    <span>Mở Telegram @Lam_Moc</span>
+                <a href="https://t.me/LamNhien" target="_blank" rel="noopener" 
+                   class="mt-3 inline-flex items-center justify-center gap-x-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-semibold py-2 px-5 rounded-2xl text-sm w-full transition-colors">
+                    <i class="fa-brands fa-telegram text-xl"></i>
+                    <span>Mở Telegram @LamNhien</span>
                 </a>
             </div>
 
-            <!-- NÚT ĐÓNG MODAL -->
-            <button onclick="closeModal()" class="mt-6 mx-auto block text-slate-400 hover:text-slate-300 text-sm font-medium transition">Đóng</button>
+            <button onclick="closeModal()" class="mt-4 mx-auto block text-slate-400 hover:text-slate-300 text-xs font-medium transition">Đóng</button>
         </div>
     </div>
 </div>
