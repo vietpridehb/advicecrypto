@@ -1072,46 +1072,38 @@
 
 // ==================== HIỂN THỊ QR CODE ====================
 function showQR(type) {
-    let src = '';
-    let title = '';
+    const modal = document.getElementById('qrModal');
+    const title = document.getElementById('qrTitle');
+    const image = document.getElementById('qrImage');
     
     if (type === 'eth') {
-        src = 'QR Code ETH2.jpg';
-        title = 'USDT ERC-20 (Ethereum)';
+        title.innerText = 'USDT ERC-20 (Ethereum)';
+        image.src = 'QR Code ETH2.jpg';
     } else if (type === 'tron') {
-        src = 'QR Code Tron2.jpg';
-        title = 'USDT TRC20 (Tron)';
+        title.innerText = 'USDT TRC20 (Tron)';
+        image.src = 'QR Code Tron2.jpg';
     }
-
-    // Tạo popup QR hoàn toàn độc lập, không ảnh hưởng tới modal chính
-    const qrPopup = document.createElement('div');
-    qrPopup.className = 'fixed inset-0 bg-black/90 flex items-center justify-center z-[100000]';
     
-    // Xử lý đóng khi click ra ngoài vùng nội dung
-    qrPopup.onclick = function(e) {
-        if (e.target === qrPopup) {
-            hideQR();
-        }
-    };
-    
-    qrPopup.innerHTML = `
-        <div class="bg-slate-900 rounded-3xl p-6 max-w-xs w-full text-center" onclick="event.stopPropagation()">
-            <h4 class="text-amber-400 font-semibold mb-4">${title}</h4>
-            <img src="${src}" alt="QR Code" class="mx-auto rounded-2xl shadow-xl" style="max-width:280px;">
-            <p class="text-slate-400 text-xs mt-6">Quét mã QR để thanh toán USDT</p>
-            <button onclick="hideQR()" class="mt-6 text-slate-400 hover:text-white text-sm font-medium">Đóng</button>
-        </div>
-    `;
-    
-    document.body.appendChild(qrPopup);
+    modal.classList.remove('hidden');
 }
 
 function hideQR() {
-    const qrPopup = document.querySelector('.fixed.inset-0.bg-black\\/90');
-    if (qrPopup) qrPopup.remove();
+    const modal = document.getElementById('qrModal');
+    if (modal) modal.classList.add('hidden');
 }
         
-    </script>    
+    </script>
+
+<!-- MODAL QR RIÊNG - ĐỘC LẬP VỚI MODAL CHÍNH -->
+<div id="qrModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[100001]">
+    <div class="bg-slate-900 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
+        <h4 id="qrTitle" class="text-amber-400 font-semibold mb-4"></h4>
+        <img id="qrImage" src="" alt="QR Code" class="mx-auto rounded-2xl shadow-xl" style="max-width:280px;">
+        <p class="text-slate-400 text-xs mt-6">Quét mã QR để thanh toán USDT</p>
+        <button onclick="hideQR()" class="mt-6 text-slate-400 hover:text-white text-sm font-medium">Đóng</button>
+    </div>
+</div>
+    
     <script src="connect-backend.js"></script>
 </body>
 </html>
