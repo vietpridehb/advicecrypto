@@ -1083,12 +1083,12 @@ function showQR(type) {
     }
 
     const qrHTML = `
-        <div class="fixed inset-0 bg-black/90 flex items-center justify-center z-[100000]" onclick="if(event.target === this) hideQR()">
+        <div class="fixed inset-0 bg-black/90 flex items-center justify-center z-[100000]" onclick="if(event.target === this) { event.stopPropagation(); hideQR(); }">
             <div class="bg-slate-900 rounded-3xl p-6 max-w-xs w-full text-center" onclick="event.stopImmediatePropagation()">
                 <h4 class="text-amber-400 font-semibold mb-4">${title}</h4>
                 <img src="${src}" alt="QR Code" class="mx-auto rounded-2xl shadow-xl" style="max-width:280px;">
                 <p class="text-slate-400 text-xs mt-6">Quét mã QR để thanh toán USDT</p>
-                <button onclick="hideQR()" 
+                <button onclick="event.stopPropagation(); hideQR();" 
                         class="mt-6 text-slate-400 hover:text-white text-sm font-medium">Đóng</button>
             </div>
         </div>
