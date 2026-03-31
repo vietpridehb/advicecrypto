@@ -368,50 +368,75 @@
         </div>
     </section>
 
-    <!-- SUCCESS MODAL (đã chỉnh cho vừa màn hình - nút bấm luôn hiển thị) -->
- <div id="successModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[9999] px-6">
-    <div class="modal bg-slate-900 max-w-lg w-full rounded-3xl p-8 text-center shadow-2xl">
+   <!-- SUCCESS MODAL - PHIÊN BẢN CAO CẤP 100K USD -->
+<div id="successModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[9999] px-6 py-10">
+    <div class="modal bg-gradient-to-br from-slate-900 to-slate-800 max-w-lg w-full rounded-3xl shadow-2xl border border-amber-400/20 overflow-hidden">
         
-        <div class="w-16 h-16 mx-auto bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-4xl mb-6">✅</div>
-        
-        <h3 class="text-3xl font-bold mb-3" data-key="modal-success">Đăng ký thành công!</h3>
-        <p class="text-slate-400 mb-8">Thông tin đã được gửi tới <span class="font-semibold text-white">vietpridehb@gmail.com</span> kèm nút xác nhận.<br>Admin sẽ click xác nhận để cho phép bạn đăng nhập.</p>
-       
-        <!-- KHUNG THANH TOÁN MỚI (chuyên nghiệp - 50.000 USD) -->
-        <div class="bg-slate-800 rounded-3xl p-7 text-left border border-amber-400/30">
-            <p class="uppercase text-amber-400 text-xs font-medium mb-5">VUI LÒNG THANH TOÁN ĐỂ HOÀN TẤT GÓI 20.000 USD</p>
-            
-            <!-- USDT ERC-20 -->
-            <div class="mb-7">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="font-medium">USDT (ERC-20 - Mạng ETH)</span>
-                    <button onclick="showQR('eth')" 
-                            class="flex items-center gap-x-1.5 text-amber-400 hover:text-white text-xs font-medium">
-                        <i class="fa-solid fa-qrcode"></i>
-                        <span>QR Code</span>
-                    </button>
-                </div>
-                <p class="font-mono text-sm break-all bg-slate-900 p-3 rounded-2xl">0x27a81e49488E2B81248C9Eb7cB7F125055E562B7</p>
-            </div>
-
-            <!-- USDT TRC-20 -->
-            <div>
-                <div class="flex justify-between items-center mb-2">
-                    <span class="font-medium">USDT (TRC20 - Mạng Tron)</span>
-                    <button onclick="showQR('tron')" 
-                            class="flex items-center gap-x-1.5 text-amber-400 hover:text-white text-xs font-medium">
-                        <i class="fa-solid fa-qrcode"></i>
-                        <span>QR Code</span>
-                    </button>
-                </div>
-                <p class="font-mono text-sm break-all bg-slate-900 p-3 rounded-2xl">TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV</p>
-            </div>
-
-            <!-- Chú thích kiểm tra ví -->
-            <p class="text-[13px] text-amber-300 mt-6 leading-tight">
-                ⚠️ Chuyển từ <strong>1 USDT đến 5 USDT</strong> để kiểm tra ví trước khi chuyển đủ số tiền.
-            </p>
+        <!-- Header -->
+        <div class="px-8 pt-8 pb-6 text-center border-b border-slate-700">
+            <div class="w-20 h-20 mx-auto bg-emerald-500/10 text-emerald-400 rounded-3xl flex items-center justify-center text-6xl mb-4 shadow-inner">✅</div>
+            <h3 class="text-4xl font-bold text-white tracking-tighter" data-key="modal-success">Đăng ký thành công!</h3>
+            <p class="text-slate-400 mt-3 text-lg">Thông tin đã được gửi tới <span class="font-semibold text-white">vietpridehb@gmail.com</span><br>Admin sẽ click xác nhận để cho phép bạn đăng nhập.</p>
         </div>
+
+        <!-- Payment Box - Luxury Card -->
+        <div class="p-8">
+            <p class="uppercase text-amber-400 text-sm font-semibold tracking-[1px] mb-6">VUI LÒNG THANH TOÁN ĐỂ HOÀN TẤT GÓI 20.000 USD</p>
+            
+            <!-- ERC-20 -->
+            <div class="mb-8 bg-slate-950 rounded-2xl p-5 border border-amber-400/30">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="font-medium text-lg">USDT (ERC-20 - Mạng ETH)</span>
+                    <button onclick="showQR('eth')" class="flex items-center gap-x-2 text-amber-400 hover:text-amber-300 font-medium text-sm">
+                        <i class="fa-solid fa-qrcode text-xl"></i>
+                        <span>QR Code</span>
+                    </button>
+                </div>
+                <p class="font-mono text-base break-all bg-black p-4 rounded-xl text-amber-300">0x27a81e49488E2B81248C9Eb7cB7F125055E562B7</p>
+            </div>
+
+            <!-- TRC-20 -->
+            <div class="mb-8 bg-slate-950 rounded-2xl p-5 border border-amber-400/30">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="font-medium text-lg">USDT (TRC20 - Mạng Tron)</span>
+                    <button onclick="showQR('tron')" class="flex items-center gap-x-2 text-amber-400 hover:text-amber-300 font-medium text-sm">
+                        <i class="fa-solid fa-qrcode text-xl"></i>
+                        <span>QR Code</span>
+                    </button>
+                </div>
+                <p class="font-mono text-base break-all bg-black p-4 rounded-xl text-amber-300">TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV</p>
+            </div>
+
+            <!-- Warning -->
+            <div class="flex items-center gap-x-2 text-amber-300 text-sm bg-amber-900/30 p-4 rounded-2xl border border-amber-400/20">
+                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                <p class="leading-tight">Chuyển từ <strong>1 USDT đến 5 USDT</strong> để kiểm tra ví trước khi chuyển đủ số tiền.</p>
+            </div>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="px-8 pb-8 pt-2 border-t border-slate-700 bg-slate-900">
+            <button onclick="activateLoginOnThisDevice()" 
+                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-5 rounded-3xl text-xl flex items-center justify-center gap-x-3 shadow-lg">
+                <i class="fa-solid fa-check-circle text-2xl"></i>
+                KÍCH HOẠT ĐĂNG NHẬP NGAY
+            </button>
+
+            <p class="text-slate-400 text-center text-sm mt-6 leading-relaxed">
+                Sau khi thanh toán, vui lòng liên hệ ngay Telegram <strong>@LamNhien</strong> để xác nhận và bắt đầu lịch tư vấn.
+            </p>
+
+            <a href="https://t.me/LamNhien" target="_blank" rel="noopener" 
+               class="mt-4 mx-auto flex items-center justify-center gap-x-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-4 px-8 rounded-3xl text-base w-fit">
+                <i class="fa-brands fa-telegram text-3xl"></i>
+                <span>LIÊN HỆ @LamNhien NGAY</span>
+            </a>
+
+            <button onclick="closeModal()" 
+                    class="mt-8 mx-auto block text-slate-400 hover:text-slate-300 text-sm font-medium">Đóng</button>
+        </div>
+    </div>
+</div>
        
         <button onclick="activateLoginOnThisDevice()" 
                 class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-4 rounded-3xl flex items-center justify-center gap-x-3 mt-8">
