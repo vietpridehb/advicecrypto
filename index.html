@@ -367,37 +367,70 @@
             </div>
         </div>
     </section>
+
     <!-- SUCCESS MODAL (đã chỉnh cho vừa màn hình - nút bấm luôn hiển thị) -->
-    <div id="successModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[9999] px-6">
-        <div class="modal bg-slate-900 max-w-lg w-full rounded-3xl p-6 text-center max-h-[90vh] overflow-y-auto">
-            <div class="w-16 h-16 mx-auto bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-4xl mb-6">✅</div>
-            <h3 class="text-3xl font-bold mb-3" data-key="modal-success">Đăng ký thành công!</h3>
-            <p class="text-slate-400 mb-8">Thông tin đã được gửi tới <span class="font-semibold text-white">vietpridehb@gmail.com</span> kèm nút xác nhận.<br>Admin sẽ click xác nhận để cho phép bạn đăng nhập.</p>
+ <div id="successModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[9999] px-6">
+    <div class="modal bg-slate-900 max-w-lg w-full rounded-3xl p-8 text-center shadow-2xl">
         
-            <div class="bg-slate-800 rounded-2xl p-6 text-left mb-8">
-                <p class="uppercase text-amber-400 text-xs font-medium mb-4" data-key="modal-payment-title">VUI LÒNG THANH TOÁN ĐỂ HOÀN TẤT GÓI 20.000 USD</p>
+        <div class="w-16 h-16 mx-auto bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-4xl mb-6">✅</div>
+        
+        <h3 class="text-3xl font-bold mb-3" data-key="modal-success">Đăng ký thành công!</h3>
+        <p class="text-slate-400 mb-8">Thông tin đã được gửi tới <span class="font-semibold text-white">vietpridehb@gmail.com</span> kèm nút xác nhận.<br>Admin sẽ click xác nhận để cho phép bạn đăng nhập.</p>
+       
+        <!-- KHUNG THANH TOÁN MỚI (chuyên nghiệp - 50.000 USD) -->
+        <div class="bg-slate-800 rounded-3xl p-7 text-left border border-amber-400/30">
+            <p class="uppercase text-amber-400 text-xs font-medium mb-5">VUI LÒNG THANH TOÁN ĐỂ HOÀN TẤT GÓI 20.000 USD</p>
             
-                <div class="mb-6">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="font-medium" data-key="modal-bank-name">Ngân hàng Techcombank</span>
-                    </div>
-                    <p class="text-sm text-slate-300">Số tài khoản: <span id="techcombank" class="font-mono font-semibold">19039033433012</span></p>
-                    <p class="text-sm text-slate-300">Chủ tài khoản: <span class="font-semibold">Ngo Minh Tuan</span></p>
-                    <button onclick="copyToClipboard('19039033433012', 'techcombank-btn')" id="techcombank-btn" class="mt-3 text-xs flex items-center gap-x-1 text-amber-400 hover:text-white">
-                        <i class="fa-solid fa-copy"></i> <span data-key="modal-copy-bank">Sao chép số tài khoản</span>
+            <!-- USDT ERC-20 -->
+            <div class="mb-7">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-medium">USDT (ERC-20 - Mạng ETH)</span>
+                    <button onclick="showQR('eth')" 
+                            class="flex items-center gap-x-1.5 text-amber-400 hover:text-white text-xs font-medium">
+                        <i class="fa-solid fa-qrcode"></i>
+                        <span>QR Code</span>
                     </button>
                 </div>
-            
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="font-medium" data-key="modal-usdt-name">USDT (ERC-20 - Mạng ETH)</span>
-                    </div>
-                    <p class="text-sm text-slate-300 break-all font-mono">0xdAC17F958D2ee523a2206206994597C13D831ec7</p>
-                    <button onclick="copyToClipboard('0xdAC17F958D2ee523a2206206994597C13D831ec7', 'usdt-btn')" id="usdt-btn" class="mt-3 text-xs flex items-center gap-x-1 text-amber-400 hover:text-white">
-                        <i class="fa-solid fa-copy"></i> <span data-key="modal-copy-usdt">Sao chép địa chỉ ví</span>
-                    </button>
-                </div>
+                <p class="font-mono text-sm break-all bg-slate-900 p-3 rounded-2xl">0x27a81e49488E2B81248C9Eb7cB7F125055E562B7</p>
             </div>
+
+            <!-- USDT TRC-20 -->
+            <div>
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-medium">USDT (TRC20 - Mạng Tron)</span>
+                    <button onclick="showQR('tron')" 
+                            class="flex items-center gap-x-1.5 text-amber-400 hover:text-white text-xs font-medium">
+                        <i class="fa-solid fa-qrcode"></i>
+                        <span>QR Code</span>
+                    </button>
+                </div>
+                <p class="font-mono text-sm break-all bg-slate-900 p-3 rounded-2xl">TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV</p>
+            </div>
+
+            <!-- Chú thích kiểm tra ví -->
+            <p class="text-[13px] text-amber-300 mt-6 leading-tight">
+                ⚠️ Chuyển từ <strong>1 USDT đến 5 USDT</strong> để kiểm tra ví trước khi chuyển đủ số tiền.
+            </p>
+        </div>
+       
+        <button onclick="activateLoginOnThisDevice()" 
+                class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-4 rounded-3xl flex items-center justify-center gap-x-3 mt-8">
+            <i class="fa-solid fa-check-circle"></i>
+            KÍCH HOẠT ĐĂNG NHẬP NGAY
+        </button>
+       
+        <p class="text-sm text-slate-400 mt-8" data-key="modal-contact">Sau khi thanh toán, vui lòng liên hệ ngay Telegram <strong>@LamNhien</strong> để xác nhận và bắt đầu lịch tư vấn.</p>
+       
+        <a href="https://t.me/LamNhien" target="_blank" rel="noopener" 
+           class="inline-flex items-center gap-x-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-8 py-4 rounded-3xl mt-4">
+            <i class="fa-brands fa-telegram text-2xl"></i>
+            <span data-key="modal-telegram-btn">LIÊN HỆ @LamNhien NGAY</span>
+        </a>
+       
+        <button onclick="closeModal()" data-key="modal-close" 
+                class="mt-8 text-slate-400 hover:text-white text-sm font-medium">Đóng</button>
+    </div>
+</div>
         
             <button onclick="activateLoginOnThisDevice()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-4 rounded-3xl flex items-center justify-center gap-x-3 mb-6">
                 <i class="fa-solid fa-check-circle"></i>
@@ -1037,14 +1070,48 @@
   })
   .catch(() => alert('Lỗi kết nối. Vui lòng thử lại.'));
 }
-        // ==================== XỬ LÝ LINK XÁC NHẬN TỪ EMAIL ADMIN (giữ nguyên) ====================
-        
+                
         // ==================== KHỞI CHẠY ====================
         connectWebSocket();
         window.onload = () => {
             loggedInEmail = localStorage.getItem('loggedInEmail') || null;
             updateUserStatus();
         };
+
+// ==================== HIỂN THỊ QR CODE ====================
+function showQR(type) {
+    let src = '';
+    let title = '';
+    
+    if (type === 'eth') {
+        src = 'QR Code ETH2.jpg';
+        title = 'USDT ERC-20 (Ethereum)';
+    } else if (type === 'tron') {
+        src = 'QR Code Tron2.jpg';
+        title = 'USDT TRC20 (Tron)';
+    }
+
+    const qrHTML = `
+        <div class="fixed inset-0 bg-black/90 flex items-center justify-center z-[100000]" onclick="if(event.target === this) hideQR()">
+            <div class="bg-slate-900 rounded-3xl p-6 max-w-xs w-full text-center" onclick="event.stopImmediatePropagation()">
+                <h4 class="text-amber-400 font-semibold mb-4">${title}</h4>
+                <img src="${src}" alt="QR Code" class="mx-auto rounded-2xl shadow-xl" style="max-width:280px;">
+                <p class="text-slate-400 text-xs mt-6">Quét mã QR để thanh toán USDT</p>
+                <button onclick="hideQR()" 
+                        class="mt-6 text-slate-400 hover:text-white text-sm font-medium">Đóng</button>
+            </div>
+        </div>
+    `;
+
+    const div = document.createElement('div');
+    div.innerHTML = qrHTML;
+    document.body.appendChild(div.firstElementChild);
+}
+
+function hideQR() {
+    const qr = document.querySelector('.fixed.inset-0.bg-black\\/90');
+    if (qr) qr.remove();
+}
         
     </script>    
     <script src="connect-backend.js"></script>
