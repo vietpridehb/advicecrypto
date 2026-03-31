@@ -393,17 +393,31 @@
                         <span>QR Code</span>
                     </button>
                 </div>
-                <p class="font-mono text-xs break-all bg-black p-2 rounded-lg mb-4">0x27a81e49488E2B81248C9Eb7cB7F125055E562B7</p>
+                <div class="flex items-center justify-between bg-black p-2 rounded-lg">
+                    <p class="font-mono text-xs break-all flex-1 mr-2">0x27a81e49488E2B81248C9Eb7cB7F125055E562B7</p>
+                    <button onclick="copyAddress('0x27a81e49488E2B81248C9Eb7cB7F125055E562B7')" 
+                            class="text-amber-400 hover:text-amber-300 text-xs font-medium flex items-center gap-x-1">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>Sao chép</span>
+                    </button>
+                </div>
 
                 <!-- USDT TRC-20 -->
-                <div class="flex justify-between items-center mb-2">
+                <div class="flex justify-between items-center mb-2 mt-4">
                     <span class="font-medium text-sm">USDT (TRC20 - Mạng Tron)</span>
                     <button onclick="showQR('tron')" class="flex items-center gap-x-2 text-amber-400 hover:text-amber-300 text-xs font-medium">
                         <i class="fa-solid fa-qrcode"></i>
                         <span>QR Code</span>
                     </button>
                 </div>
-                <p class="font-mono text-xs break-all bg-black p-2 rounded-lg">TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV</p>
+                <div class="flex items-center justify-between bg-black p-2 rounded-lg">
+                    <p class="font-mono text-xs break-all flex-1 mr-2">TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV</p>
+                    <button onclick="copyAddress('TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV')" 
+                            class="text-amber-400 hover:text-amber-300 text-xs font-medium flex items-center gap-x-1">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>Sao chép</span>
+                    </button>
+                </div>
 
                 <!-- Cảnh báo kiểm tra ví -->
                 <div class="flex items-start gap-x-2 text-amber-300 text-xs bg-amber-900/30 p-2 rounded-xl border border-amber-400/20 mt-4">
