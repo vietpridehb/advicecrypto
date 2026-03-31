@@ -371,34 +371,32 @@
 
   <!-- SUCCESS MODAL - PHIÊN BẢN GỌN & CAO CẤP -->
 <div id="successModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[9999] px-6">
-    <div class="modal bg-gradient-to-br from-slate-900 to-slate-800 max-w-md w-full rounded-3xl shadow-2xl border border-amber-400/30 overflow-hidden">
+    <div class="modal bg-gradient-to-br from-slate-900 to-slate-800 max-w-sm w-full rounded-3xl shadow-2xl border border-amber-400/30 overflow-hidden">
         
         <!-- Header -->
         <div class="px-6 pt-6 pb-4 text-center border-b border-slate-700">
             <div class="w-16 h-16 mx-auto bg-emerald-500/10 text-emerald-400 rounded-3xl flex items-center justify-center text-5xl mb-3">✅</div>
             <h3 class="text-3xl font-bold text-white tracking-tighter" data-key="modal-success">Đăng ký thành công!</h3>
-            <p class="text-slate-400 mt-2">Thông tin đã được gửi tới <span class="font-semibold text-white">vietpridehb@gmail.com</span><br>Admin sẽ click xác nhận để cho phép bạn đăng nhập.</p>
+            <p class="text-slate-400 mt-2 text-base">Thông tin đã được gửi tới <span class="font-semibold text-white">vietpridehb@gmail.com</span><br>Admin sẽ click xác nhận để cho phép bạn đăng nhập.</p>
         </div>
 
-        <!-- Payment Box -->
+        <!-- Single Payment Frame -->
         <div class="p-6">
-            <p class="uppercase text-amber-400 text-xs font-semibold tracking-[1px] mb-5">VUI LÒNG THANH TOÁN ĐỂ HOÀN TẤT GÓI 20.000 USD</p>
+            <p class="uppercase text-amber-400 text-xs font-semibold tracking-[1px] mb-5 text-center">VUI LÒNG THANH TOÁN ĐỂ HOÀN TẤT GÓI 20.000 USD</p>
             
-            <!-- ERC-20 -->
-            <div class="mb-6 bg-slate-950 rounded-2xl p-4 border border-amber-400/30">
-                <div class="flex justify-between items-center mb-3">
+            <div class="bg-slate-950 rounded-2xl p-5 border border-amber-400/30">
+                <!-- ERC-20 -->
+                <div class="flex justify-between items-center mb-4">
                     <span class="font-medium">USDT (ERC-20 - Mạng ETH)</span>
                     <button onclick="showQR('eth')" class="flex items-center gap-x-2 text-amber-400 hover:text-amber-300 text-sm font-medium">
                         <i class="fa-solid fa-qrcode"></i>
                         <span>QR Code</span>
                     </button>
                 </div>
-                <p class="font-mono text-sm break-all bg-black p-3 rounded-xl">0x27a81e49488E2B81248C9Eb7cB7F125055E562B7</p>
-            </div>
+                <p class="font-mono text-sm break-all bg-black p-3 rounded-xl mb-6">0x27a81e49488E2B81248C9Eb7cB7F125055E562B7</p>
 
-            <!-- TRC-20 -->
-            <div class="mb-6 bg-slate-950 rounded-2xl p-4 border border-amber-400/30">
-                <div class="flex justify-between items-center mb-3">
+                <!-- TRC-20 -->
+                <div class="flex justify-between items-center mb-4">
                     <span class="font-medium">USDT (TRC20 - Mạng Tron)</span>
                     <button onclick="showQR('tron')" class="flex items-center gap-x-2 text-amber-400 hover:text-amber-300 text-sm font-medium">
                         <i class="fa-solid fa-qrcode"></i>
@@ -406,12 +404,12 @@
                     </button>
                 </div>
                 <p class="font-mono text-sm break-all bg-black p-3 rounded-xl">TWJMcwAZG68TLa42AVqBrEvVBx9tkxDbdV</p>
-            </div>
 
-            <!-- Warning -->
-            <div class="flex items-start gap-x-2 text-amber-300 text-xs bg-amber-900/30 p-3 rounded-2xl border border-amber-400/20">
-                <i class="fa-solid fa-triangle-exclamation mt-px"></i>
-                <p>Chuyển từ <strong>1 USDT đến 5 USDT</strong> để kiểm tra ví trước khi chuyển đủ số tiền.</p>
+                <!-- Warning -->
+                <div class="flex items-start gap-x-2 text-amber-300 text-xs bg-amber-900/30 p-3 rounded-2xl border border-amber-400/20 mt-5">
+                    <i class="fa-solid fa-triangle-exclamation mt-px"></i>
+                    <p>Chuyển từ <strong>1 USDT đến 5 USDT</strong> để kiểm tra ví trước khi chuyển đủ số tiền.</p>
+                </div>
             </div>
         </div>
 
