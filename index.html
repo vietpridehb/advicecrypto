@@ -1069,6 +1069,7 @@
             updateUserStatus();
         };
 
+
 // ==================== HIỂN THỊ QR CODE ====================
 function showQR(type) {
     let src = '';
@@ -1082,26 +1083,32 @@ function showQR(type) {
         title = 'USDT TRC20 (Tron)';
     }
 
-    const qrHTML = `
-        <div class="fixed inset-0 bg-black/90 flex items-center justify-center z-[100000]" onclick="if(event.target === this) { event.stopPropagation(); hideQR(); }">
-            <div class="bg-slate-900 rounded-3xl p-6 max-w-xs w-full text-center" onclick="event.stopImmediatePropagation()">
-                <h4 class="text-amber-400 font-semibold mb-4">${title}</h4>
-                <img src="${src}" alt="QR Code" class="mx-auto rounded-2xl shadow-xl" style="max-width:280px;">
-                <p class="text-slate-400 text-xs mt-6">Quét mã QR để thanh toán USDT</p>
-                <button onclick="event.stopPropagation(); hideQR();" 
-                        class="mt-6 text-slate-400 hover:text-white text-sm font-medium">Đóng</button>
-            </div>
+    // Tạo popup QR hoàn toàn độc lập, không ảnh hưởng tới modal chính
+    const qrPopup = document.createElement('div');
+    qrPopup.className = 'fixed inset-0 bg-black/90 flex items-center justify-center z-[100000]';
+    
+    // Xử lý đóng khi click ra ngoài vùng nội dung
+    qrPopup.onclick = function(e) {
+        if (e.target === qrPopup) {
+            hideQR();
+        }
+    };
+    
+    qrPopup.innerHTML = `
+        <div class="bg-slate-900 rounded-3xl p-6 max-w-xs w-full text-center" onclick="event.stopPropagation()">
+            <h4 class="text-amber-400 font-semibold mb-4">${title}</h4>
+            <img src="${src}" alt="QR Code" class="mx-auto rounded-2xl shadow-xl" style="max-width:280px;">
+            <p class="text-slate-400 text-xs mt-6">Quét mã QR để thanh toán USDT</p>
+            <button onclick="hideQR()" class="mt-6 text-slate-400 hover:text-white text-sm font-medium">Đóng</button>
         </div>
     `;
-
-    const div = document.createElement('div');
-    div.innerHTML = qrHTML;
-    document.body.appendChild(div.firstElementChild);
+    
+    document.body.appendChild(qrPopup);
 }
 
 function hideQR() {
-    const qr = document.querySelector('.fixed.inset-0.bg-black\\/90');
-    if (qr) qr.remove();
+    const qrPopup = document.querySelector('.fixed.inset-0.bg-black\\/90');
+    if (qrPopup) qrPopup.remove();
 }
         
     </script>    
