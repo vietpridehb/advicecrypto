@@ -663,17 +663,19 @@
         // ==================== LOGIN / LOGOUT SYSTEM ====================
         function loginUser(email) {
             loggedInEmail = email;
-            localStorage.setItem('loggedInEmail', email);
+            sessionStorage.setItem('loggedInEmail', email);
             updateUserStatus();
-        }
+            }
+
         function logoutUser() {
             loggedInEmail = null;
-            localStorage.removeItem('loggedInEmail');
+            sessionStorage.removeItem('loggedInEmail');
             updateUserStatus();
-        }
+            }
         function updateUserStatus() {
             const container = document.getElementById('nav-cta-container');
             if (!container) return;
+            loggedInEmail = sessionStorage.getItem('loggedInEmail');
             if (loggedInEmail) {
                 container.innerHTML = `
                     <div class="flex items-center gap-x-3 bg-emerald-900/60 border border-emerald-400/30 text-white px-5 py-2.5 rounded-3xl text-sm font-medium">
@@ -1054,7 +1056,7 @@
   .then(res => res.json())
   .then(d2 => {
     if (d2.success) {
-      localStorage.setItem('loginToken', d2.token);
+      sessionStorage.setItem('loginToken', d2.token);
       loginUser(emailToActivate);
 
       // Cập nhật confirmedEmails để gated content hoạt động
@@ -1077,8 +1079,9 @@
         // ==================== KHỞI CHẠY ====================
         connectWebSocket();
         window.onload = () => {
-            loggedInEmail = localStorage.getItem('loggedInEmail') || null;
+            loggedInEmail = sessionStorage.getItem('loggedInEmail') || null;
             updateUserStatus();
+            handleConfirmationLink();
         };
 
 
