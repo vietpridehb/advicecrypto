@@ -650,7 +650,7 @@
                     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
                         el.placeholder = translations[key][lang];
                     } else {
-                        if (key === 'register-desc' || key === 'modal-contact') {
+                        if (key === 'register-desc' || key === 'modal-contact' || key === 'modal-success-desc' || key === 'modal-warning' || key === 'modal-contact-text') {
                             el.innerHTML = translations[key][lang];
                         } else {
                             el.innerText = translations[key][lang];
