@@ -482,6 +482,34 @@
             <p class="mt-8 text-xs">Liên hệ thanh toán & hỗ trợ qua Telegram: @Lam_Moc </p>
         </div>
     </footer>
+
+<!-- ====================== BẢO VỆ SOURCE CODE ====================== -->
+<script>
+// Disable chuột phải
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    alert('🚫 Không được xem source code của trang này!');
+    return false;
+});
+
+// Khóa phím tắt DevTools + View Source
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.key.toLowerCase() === 'u') || 
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J'))) {
+        e.preventDefault();
+        alert('🚫 Bảo vệ source code! Không được mở DevTools hoặc xem source.');
+        return false;
+    }
+});
+
+// Ngăn select + drag
+document.addEventListener('selectstart', e => e.preventDefault());
+document.addEventListener('dragstart', e => e.preventDefault());
+
+console.log('%c✅ Source code đã được bảo vệ!', 'color:#f59e0b; font-weight:bold; font-size:14px');
+</script>
+    
     <script>
        
 // Translations object (Vietnamese + English) - đầy đủ
