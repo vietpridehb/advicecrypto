@@ -487,8 +487,14 @@
 <script>
 // Disable chuột phải
 document.addEventListener('contextmenu', function(e) {
+    const tag = e.target.tagName.toLowerCase();
+    // CHO PHÉP chuột phải trên ô nhập liệu (input, textarea) để paste thông tin
+    if (['input', 'textarea', 'select'].includes(tag)) {
+        return true;   // Không chặn
+    }
+    // CÒN LẠI (không phải ô form) thì cấm xem source
     e.preventDefault();
-    alert('🚫 Không được xem source code của trang này!');
+    alert('🚫Trang Web Hạn Chế Chuột Phải!');
     return false;
 });
 
