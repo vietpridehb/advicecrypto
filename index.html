@@ -509,7 +509,9 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-
+// Ngăn select + drag
+document.addEventListener('selectstart', e => e.preventDefault());
+document.addEventListener('dragstart', e => e.preventDefault());
 
 console.log('%c✅ Source code đã được bảo vệ!', 'color:#f59e0b; font-weight:bold; font-size:14px');
 </script>
