@@ -485,7 +485,7 @@
 
 <!-- ====================== BẢO VỆ SOURCE CODE ====================== -->
 <script>
-// Disable chuột phải
+// Disable chuột phải - không thông báo
 document.addEventListener('contextmenu', function(e) {
     const tag = e.target.tagName.toLowerCase();
     // CHO PHÉP chuột phải trên ô nhập liệu (input, textarea) để paste thông tin
@@ -494,7 +494,6 @@ document.addEventListener('contextmenu', function(e) {
     }
     // CÒN LẠI (không phải ô form) thì cấm xem source
     e.preventDefault();
-    alert('🚫Trang Web Hạn Chế Chuột Phải!');
     return false;
 });
 
@@ -504,7 +503,6 @@ document.addEventListener('keydown', function(e) {
         (e.ctrlKey && e.key.toLowerCase() === 'u') || 
         (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J'))) {
         e.preventDefault();
-        alert('🚫 Bảo vệ source code! Không được mở DevTools hoặc xem source.');
         return false;
     }
 });
