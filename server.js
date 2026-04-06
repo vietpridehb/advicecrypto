@@ -123,9 +123,15 @@ app.post('/api/verify', async (req, res) => {
   }
 });
 
+// ====================== PING GIỮ SERVICE KHÔNG SLEEP (Render free tier) ======================
+app.get('/ping', (req, res) => {
+  res.status(200).send('pong');
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
