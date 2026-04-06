@@ -125,7 +125,7 @@ app.post('/api/verify', async (req, res) => {
 
 // ====================== PING GIỮ SERVICE KHÔNG SLEEP (Render free tier) ======================
 app.get('/ping', (req, res) => {
-  res.status(200).send('pong');
+  res.status(200).send('OK');
 });
 
 app.get('*', (req, res) => {
